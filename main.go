@@ -75,8 +75,12 @@ func autoClick() {
 			fmt.Println("Auto Click stopped")
 			return
 		default:
-			// Perform left click
-			robotgo.Click("left")
+			// Check if the active window title matches "Roblox" before clicking
+			title := robotgo.GetTitle()
+			if title == "Roblox" {
+				// Perform left click
+				robotgo.Click("left")
+			}
 
 			// Delay for 500 milliseconds (adjust as needed)
 			time.Sleep(500 * time.Millisecond)
