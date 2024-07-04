@@ -2,11 +2,19 @@ package main
 
 import (
 	"time"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/go-vgo/robotgo"
+)
+
+const (
+	READY  = "Ready"
+	START  = "Started"
+	RUNING = "Running.."
+	STOP   = "Stopped"
 )
 
 var (
@@ -17,10 +25,13 @@ var (
 func main() {
 	a := app.New()
 	w := a.NewWindow("Roblox Auto Click by nptfreez 1.0.0")
+	// Set window icon
+	r, _ := fyne.LoadResourceFromPath("icons.svg")
+	w.SetIcon(r)
 	// Resize the window
 	w.Resize(fyne.NewSize(480, 100))
 	// Create log label
-	logLabel = widget.NewLabel("Status: Ready")
+	logLabel = widget.NewLabel("Status: " + READY)
 
 	// Buttons and their functionality
 	startButton := widget.NewButton("Start (F1)", func() {
@@ -60,12 +71,12 @@ func main() {
 
 func startAutoClick() {
 	if autoClicking {
-		updateLog("Status: running already")
+		updateLog("Status: " + RUNING)
 		return
 	}
 	autoClicking = true
 	go autoClick()
-	updateLog("Status: started")
+	updateLog("Status: " + START)
 }
 
 func stopAutoClick() {
@@ -73,11 +84,11 @@ func stopAutoClick() {
 		return
 	}
 	autoClicking = false
-	updateLog("Status: stopped")
+	updateLog("Status: " + STOP)
 	// Delay for 5 seconds (adjust as needed)
 	time.Sleep(5 * time.Second)
-	// Status: ready
-	updateLog("Status: ready")
+	// Reset
+	updateLog("Status: " + READY)
 }
 
 func autoClick() {
