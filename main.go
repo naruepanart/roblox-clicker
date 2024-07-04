@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"time"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -13,19 +11,27 @@ import (
 
 var (
 	autoClicking bool
+	logLabel     *widget.Label
 )
 
 func main() {
 	a := app.New()
-	w := a.NewWindow("Roblox Auto Click by nptfreez")
+	w := a.NewWindow("Roblox Auto Click by nptfreez 1.0.0")
 	// Resize the window
-	w.Resize(fyne.NewSize(300, 100))
-	// Create buttons and set their functionality
+	w.Resize(fyne.NewSize(480, 100))
+	// Create log label
+	logLabel = widget.NewLabel("Status: Ready")
+
+	// Buttons and their functionality
 	startButton := widget.NewButton("Start (F1)", func() {
 		startAutoClick()
 	})
 	stopButton := widget.NewButton("Stop (F2)", func() {
 		stopAutoClick()
+	})
+	exitButton := widget.NewButton("Exit (F3)", func() {
+		stopAutoClick()
+		a.Quit()
 	})
 
 	// Define keyboard shortcuts
@@ -37,15 +43,16 @@ func main() {
 			stopAutoClick()
 		case fyne.KeyF3:
 			stopAutoClick()
-			a.Quit() // Quit application on F3 press
+			a.Quit()
 		}
 	})
 
 	// Layout using VBox container
 	w.SetContent(container.NewVBox(
-		widget.NewLabel("Roblox Auto Click by nptfreez"),
+		logLabel,
 		startButton,
 		stopButton,
+		exitButton,
 	))
 
 	w.ShowAndRun()
@@ -53,12 +60,12 @@ func main() {
 
 func startAutoClick() {
 	if autoClicking {
-		fmt.Println("Auto Click already running")
+		updateLog("Status: running already")
 		return
 	}
 	autoClicking = true
 	go autoClick()
-	fmt.Println("Auto Click started")
+	updateLog("Status: started")
 }
 
 func stopAutoClick() {
@@ -66,7 +73,11 @@ func stopAutoClick() {
 		return
 	}
 	autoClicking = false
-	fmt.Println("Auto Click stopped")
+	updateLog("Status: stopped")
+	// Delay for 5 seconds (adjust as needed)
+	time.Sleep(5 * time.Second)
+	// Status: ready
+	updateLog("Status: ready")
 }
 
 func autoClick() {
@@ -81,4 +92,8 @@ func autoClick() {
 		// Delay for 500 milliseconds (adjust as needed)
 		time.Sleep(500 * time.Millisecond)
 	}
+}
+
+func updateLog(message string) {
+	logLabel.SetText(message)
 }
