@@ -18,7 +18,8 @@ var (
 func main() {
 	a := app.New()
 	w := a.NewWindow("Roblox Auto Click by nptfreez")
-
+	// Resize the window
+	w.Resize(fyne.NewSize(300, 100))
 	// Create buttons and set their functionality
 	startButton := widget.NewButton("Start (F1)", func() {
 		startAutoClick()
@@ -57,7 +58,7 @@ func startAutoClick() {
 	}
 	stopChan = make(chan struct{})
 	go autoClick()
-	fmt.Println("Auto Click started.")
+	fmt.Println("Auto Click started")
 }
 
 func stopAutoClick() {
