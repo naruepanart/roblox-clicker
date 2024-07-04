@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	stopChan chan struct{}
+	autoClicking bool
 )
 
 func main() {
@@ -52,39 +52,33 @@ func main() {
 }
 
 func startAutoClick() {
-	if stopChan != nil {
+	if autoClicking {
 		fmt.Println("Auto Click already running")
 		return
 	}
-	stopChan = make(chan struct{})
+	autoClicking = true
 	go autoClick()
 	fmt.Println("Auto Click started")
 }
 
 func stopAutoClick() {
-	if stopChan != nil {
-		close(stopChan)
-		stopChan = nil
-		fmt.Println("Auto Click stopped")
+	if !autoClicking {
+		return
 	}
+	autoClicking = false
+	fmt.Println("Auto Click stopped")
 }
 
 func autoClick() {
-	for {
-		select {
-		case <-stopChan:
-			fmt.Println("Auto Click stopped")
-			return
-		default:
-			// Check if the active window title matches "Roblox" before clicking
-			title := robotgo.GetTitle()
-			if title == "Roblox" {
-				// Perform left click
-				robotgo.Click("left")
-			}
-
-			// Delay for 500 milliseconds (adjust as needed)
-			time.Sleep(500 * time.Millisecond)
+	for autoClicking {
+		// Check if the active window title matches "Roblox" before clicking
+		title := robotgo.GetTitle()
+		if title == "Roblox" {
+			// Perform left click
+			robotgo.Click("left")
 		}
+
+		// Delay for 500 milliseconds (adjust as needed)
+		time.Sleep(500 * time.Millisecond)
 	}
 }
