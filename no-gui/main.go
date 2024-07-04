@@ -19,38 +19,28 @@ const (
 
 var (
 	isAutoClicking bool
-	currentStatus  string
 )
 
 func main() {
-	currentStatus = StatusReady
-	fmt.Println("Status:", currentStatus)
+	fmt.Println("Status:", StatusReady)
 
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, syscall.SIGINT, syscall.SIGTERM)
 
-	fmt.Println("Press '1' to start, '2' to stop, and '3' to quit.")
-
-	go handleInput()
-
-	for range signalChannel {
-		stopAutoClicking()
-		fmt.Println("Exiting...")
-		os.Exit(0)
-	}
-}
-
-func handleInput() {
-	var input string
 	for {
-		fmt.Scanln(&input)
+		var input string
+		_, err := fmt.Scanln(&input)
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			continue
+		}
+
 		switch input {
 		case "1":
-			startAutoClicking()
+			start()
 		case "2":
-			stopAutoClicking()
+			stop()
 		case "3":
-			stopAutoClicking()
 			fmt.Println("Exiting...")
 			os.Exit(0)
 		default:
@@ -59,29 +49,28 @@ func handleInput() {
 	}
 }
 
-func startAutoClicking() {
+func start() {
 	if isAutoClicking {
 		fmt.Println("Status:", StatusRunning)
 		return
 	}
 	isAutoClicking = true
-	currentStatus = StatusStarted
-	fmt.Println("Status:", currentStatus)
-
-	go func() {
-		for isAutoClicking {
-			if robotgo.GetTitle() == "Roblox" {
-				robotgo.Click("left")
-			}
-			time.Sleep(500 * time.Millisecond)
-		}
-	}()
+	fmt.Println("Status:", StatusStarted)
+	go autoClick()
 }
 
-func stopAutoClicking() {
+func stop() {
 	if isAutoClicking {
 		isAutoClicking = false
-		currentStatus = StatusStopped
-		fmt.Println("Status:", currentStatus)
+		fmt.Println("Status:", StatusStopped)
+	}
+}
+
+func autoClick() {
+	for isAutoClicking {
+		if robotgo.GetTitle() == "Roblox" {
+			robotgo.Click("left")
+		}
+		time.Sleep(500 * time.Millisecond)
 	}
 }
