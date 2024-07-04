@@ -25,7 +25,8 @@ var (
 func main() {
 	a := app.New()
 	w := a.NewWindow("Roblox Auto Clicker 1.0.0")
-	w.SetIcon(fyne.NewStaticResource("icon", []byte("icons.svg")))
+	icon, _ := fyne.LoadResourceFromPath("icons.svg")
+	w.SetIcon(icon)
 	w.Resize(fyne.NewSize(480, 100))
 
 	startButton := widget.NewButton("Start (F1)", startAutoClick)
