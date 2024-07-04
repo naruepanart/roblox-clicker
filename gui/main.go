@@ -19,39 +19,35 @@ const (
 
 var (
 	isAutoClicking bool
-	statusLabel    *widget.Label
+	statusLabel    = widget.NewLabel("Status: " + StatusReady)
 )
 
 func main() {
-	app := app.New()
-	win := app.NewWindow("Roblox Auto Clicker 1.0.0")
-
-	icon, _ := fyne.LoadResourceFromPath("icons.svg")
-	win.SetIcon(icon)
-	win.Resize(fyne.NewSize(480, 100))
-
-	statusLabel = widget.NewLabel("Status: " + StatusReady)
+	a := app.New()
+	w := a.NewWindow("Roblox Auto Clicker 1.0.0")
+	w.SetIcon(fyne.NewStaticResource("icon", []byte("icons.svg")))
+	w.Resize(fyne.NewSize(480, 100))
 
 	startButton := widget.NewButton("Start (F1)", startAutoClick)
 	stopButton := widget.NewButton("Stop (F2)", stopAutoClick)
-	exitButton := widget.NewButton("Exit (F3)", app.Quit)
+	exitButton := widget.NewButton("Exit (F3)", a.Quit)
 
-	win.Canvas().SetOnTypedKey(func(event *fyne.KeyEvent) {
-		handleShortcuts(event, app)
+	w.Canvas().SetOnTypedKey(func(event *fyne.KeyEvent) {
+		handleShortcuts(event, a)
 	})
 
-	win.SetContent(container.NewVBox(statusLabel, startButton, stopButton, exitButton))
-	win.ShowAndRun()
+	w.SetContent(container.NewVBox(statusLabel, startButton, stopButton, exitButton))
+	w.ShowAndRun()
 }
 
-func handleShortcuts(event *fyne.KeyEvent, app fyne.App) {
+func handleShortcuts(event *fyne.KeyEvent, a fyne.App) {
 	switch event.Name {
 	case fyne.KeyF1:
 		startAutoClick()
 	case fyne.KeyF2:
 		stopAutoClick()
 	case fyne.KeyF3:
-		app.Quit()
+		a.Quit()
 	}
 }
 
